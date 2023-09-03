@@ -1,0 +1,114 @@
+Date :- 2nd September 2023
+Problem Link:-https://practice.geeksforgeeks.org/problems/leaf-under-budget/1
+
+Solution (Approach 1):- Using Tree Inorder, Preorder, or Postorder Traversal
+
+class Solution {
+
+    // Create a list to store the heights of leaf nodes in a binary tree
+    static List<Integer> leaf = new LinkedList<>();
+
+    // A method to calculate the heights of leaf nodes in a binary tree
+    void getLeafs(int height, Node node) {
+        if (node == null)
+            return;
+        
+        // Check if the current node is a leaf node (both left and right children are null)
+        if (node.left == null && node.right == null) {
+            // Add the height of the leaf node to the 'leaf' list
+            leaf.add(height);
+            // Uncomment the following line to print the data and height of the leaf node
+            // System.out.println(node.data + "-->" + height);
+        }
+
+        // Recursively call the 'getLeafs' method for the left and right children
+        getLeafs(height + 1, node.left);
+        getLeafs(height + 1, node.right);
+    }
+
+    // A method to count how many leaf nodes can be included within a given budget
+    public int getCount(Node node, int budget) {
+        // Clear the 'leaf' list to store the heights of leaf nodes for the current calculation
+        leaf.clear();
+        int count = 0;
+
+        // Calculate the heights of leaf nodes in the binary tree
+        getLeafs(1, node);
+
+        // Sort the 'leaf' list in ascending order
+        Collections.sort(leaf);
+
+        // Iterate through the sorted list of leaf heights
+        for (int val : leaf) {
+            // Check if the remaining budget is greater than or equal to the height of the leaf node
+            if (budget >= val) {
+                // Increment the count of included leaf nodes
+                ++count;
+                // Deduct the height of the included leaf node from the budget
+                budget -= val;
+            } else {
+                // If the budget is not enough to include the current leaf node, stop iterating
+                break;
+            }
+        }
+        // Return the count of included leaf nodes within the budget
+        return count;
+    }
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Solution (Approach 2):- Using Level Order Traversal OR BFS TRaversal
+
+class Solution {
+    public int getCount(Node node, int bud) {
+        // Initialize the count of nodes that can be selected within the budget
+        int count = 0;
+        // Initialize the level of the current node in the tree
+        int level = 1;
+        // Create a queue for level-order traversal
+        Queue<Node> Q = new LinkedList<>();
+        // Add the root node to the queue
+        Q.offer(node);
+
+        // Perform level-order traversal while considering the budget
+        while (!Q.isEmpty()) {
+            // Get the number of nodes at the current level
+            int size = Q.size();
+            // Process nodes at the current level
+            for (int i = 0; i < size; i++) {
+                // Dequeue the current node
+                Node curr = Q.poll();
+                // Check if the current node is a leaf node (no left and right children)
+                if (curr.left == null && curr.right == null) {
+                    // If the budget allows selecting nodes at this level, increment the count
+                    if (bud >= level) {
+                        count++;
+                        // Subtract the level from the budget
+                        bud = bud - level;
+                    }
+                }
+                // Enqueue the left and right children of the current node (if they exist)
+                if (curr.left != null)
+                    Q.offer(curr.left);
+                if (curr.right != null)
+                    Q.offer(curr.right);
+            }
+            // If the budget is exhausted or negative, exit the loop
+            if (bud <= 0)
+                break;
+            // Move to the next level of the tree
+            level++;
+        }
+
+        // Return the count of nodes that can be selected within the budget
+        return count;
+    }
+}
+
+
+
