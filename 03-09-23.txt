@@ -1,0 +1,37 @@
+Date:-03-09-23
+Problem Link:-https://practice.geeksforgeeks.org/problems/check-if-tree-is-isomorphic/1
+Problem name:- "Check if Tree is Isomorphic"
+
+Solution:- Just by manupulating the tree traversal
+
+class Solution  
+{ 
+    // Return True if the given trees are isomorphic. Else return False.
+    boolean isIsomorphic(Node root1, Node root2)  
+    { 
+         // Check if both trees are empty, which means they are isomorphic.
+         if(root1==null && root2==null)
+            return true;
+            
+        // If one of the trees is empty and the other is not, they can't be isomorphic.
+        if(root1==null || root2==null ){
+            return false;
+        }
+        
+        // If the data of the current nodes in both trees doesn't match, they can't be isomorphic.
+        if(root1.data!=root2.data)
+            return false;
+            
+        // Check for two possible options of isomorphism:
+        // 1. Recursively compare the left subtree of the first tree with the left subtree of the second tree
+        //    AND the right subtree of the first tree with the right subtree of the second tree.
+        // 2. Recursively compare the left subtree of the first tree with the right subtree of the second tree
+        //    AND the right subtree of the first tree with the left subtree of the second tree.
+        boolean option1 = isIsomorphic(root1.left, root2.left) || isIsomorphic(root1.left, root2.right);
+        boolean option2 = isIsomorphic(root1.right, root2.right) || isIsomorphic(root1.right, root2.left);
+        
+        // Return True if either of the two options is True, indicating that the trees are isomorphic.
+        return (option1 && option2);
+    }
+    
+}
